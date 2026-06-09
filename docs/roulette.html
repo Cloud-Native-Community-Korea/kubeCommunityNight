@@ -13,40 +13,47 @@
     --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--font);color:var(--ink);background:var(--bg);
-    min-height:100vh;text-align:center;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .bar{position:fixed;left:0;right:0;height:7px;background:var(--blue);z-index:3}
+  body{font-family:var(--font);color:var(--ink);min-height:100vh;text-align:center;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background:radial-gradient(125% 90% at 50% -15%,#E6F2FF 0%,var(--bg) 42%,#FDF1E7 115%) fixed}
+  .bar{position:fixed;left:0;right:0;height:7px;z-index:3;
+    background:linear-gradient(90deg,#0080CC,#0FA6B8,#0E9F6E,#E0852A,#EF5273,#7C5CE0)}
   .bar.top{top:0}.bar.bottom{bottom:0}
+  .sprinkles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .sprinkles i{position:absolute;top:var(--t);left:var(--l);width:var(--s);height:var(--s);
+    background:var(--c);border-radius:50%;opacity:.5}
+  .sprinkles i[style*="--r"]{border-radius:4px;transform:rotate(45deg)}
 
   header{padding:30px 16px 6px}
-  header img.banner{width:min(90vw,460px);height:auto;display:block;margin:0 auto 8px}
-  header h1{color:var(--navy);font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-.01em}
-  header p{color:var(--blue);font-weight:600;font-size:clamp(14px,2.4vw,18px);margin-top:4px}
+  header img.banner{width:min(92vw,560px);height:auto;display:block;margin:0 auto 10px}
+  header h1{color:var(--navy);font-size:clamp(32px,6vw,56px);font-weight:800;letter-spacing:-.01em}
 
-  main{display:flex;flex-direction:column;align-items:center;gap:18px;padding:8px 16px 40px}
+  main{display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px 16px 40px}
 
-  .wheel-wrap{position:relative;width:min(86vw,560px);aspect-ratio:1/1;margin-top:6px}
+  .wheel-wrap{position:relative;width:min(96vw,860px);aspect-ratio:1/1;margin-top:10px}
   #wheel{width:100%;height:100%;display:block;
     filter:drop-shadow(0 14px 34px rgba(16,33,60,.20));border-radius:50%}
-  /* pointer at top */
-  .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:4;
-    width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;
-    border-top:30px solid var(--gold);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
-  /* center hub = spin button */
+  .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:4;
+    width:0;height:0;border-left:23px solid transparent;border-right:23px solid transparent;
+    border-top:40px solid var(--gold);filter:drop-shadow(0 2px 4px rgba(0,0,0,.28))}
   .hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;
-    width:23%;height:23%;border-radius:50%;border:6px solid #fff;cursor:pointer;
+    width:23%;height:23%;border-radius:50%;border:8px solid #fff;cursor:pointer;
     background:radial-gradient(circle at 50% 38%,#2A89D6,var(--blue));
-    color:#fff;font-family:var(--font);font-weight:800;font-size:clamp(15px,2.6vw,21px);
-    box-shadow:0 6px 16px rgba(16,33,60,.35);transition:transform .12s}
+    color:#fff;font-family:var(--font);font-weight:800;font-size:clamp(18px,3vw,27px);
+    box-shadow:0 8px 20px rgba(16,33,60,.38);transition:transform .12s}
   .hub:hover{transform:translate(-50%,-50%) scale(1.05)}
   .hub:active{transform:translate(-50%,-50%) scale(.97)}
   .hub:disabled{opacity:.7;cursor:default}
 
-  .spin-btn{background:var(--blue);color:#fff;border:none;border-radius:999px;cursor:pointer;
-    font-family:var(--font);font-weight:700;font-size:19px;padding:14px 46px;
-    box-shadow:0 8px 20px rgba(0,128,204,.35);transition:transform .12s,box-shadow .12s,background .12s}
-  .spin-btn:hover{background:#0a74b8;transform:translateY(-2px)}
+  .spin-btn{background:linear-gradient(135deg,#0a86d6,#7C5CE0);color:#fff;border:none;border-radius:999px;cursor:pointer;
+    font-family:var(--font);font-weight:700;font-size:23px;padding:18px 64px;
+    box-shadow:0 12px 28px rgba(108,92,231,.36);transition:transform .12s,box-shadow .12s,filter .12s}
+  .spin-btn:hover{filter:brightness(1.07);transform:translateY(-2px)}
   .spin-btn:disabled{background:#9bb6c9;box-shadow:none;cursor:default;transform:none}
+
+  .link-btn{background:none;border:none;color:var(--blue);font-weight:600;cursor:pointer;
+    font-size:16px;font-family:var(--font)}
+  .link-btn:hover{text-decoration:underline}
 
   .history{max-width:600px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:30px}
   .history .h-label{color:var(--light);font-size:13px;align-self:center;margin-right:2px}
@@ -54,17 +61,16 @@
     padding:5px 12px;font-size:13px;font-weight:600}
   .chip:first-of-type{background:var(--gold);color:#fff;border-color:var(--gold)}
 
-  /* winner overlay */
   .overlay{position:fixed;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;
     background:rgba(13,27,42,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;
-    transition:opacity .25s}
+    transition:opacity .25s;padding:16px}
   .overlay.show{opacity:1;pointer-events:auto}
   .card{background:#fff;border-radius:22px;padding:34px 40px 30px;max-width:90vw;
     box-shadow:0 24px 70px rgba(0,0,0,.35);transform:scale(.9);transition:transform .28s cubic-bezier(.2,.9,.3,1.3);
     border-top:8px solid var(--gold)}
   .overlay.show .card{transform:scale(1)}
   .card .label{color:var(--gold);font-weight:800;letter-spacing:.22em;font-size:15px}
-  .card .name{color:var(--navy);font-weight:800;font-size:clamp(34px,8vw,68px);margin:8px 0 20px;
+  .card .name{color:var(--navy);font-weight:800;font-size:clamp(50px,10vw,104px);margin:8px 0 20px;
     word-break:keep-all;line-height:1.1}
   .card .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .card button{font-family:var(--font);font-weight:700;font-size:16px;border-radius:12px;
@@ -73,6 +79,16 @@
   .card .again:hover{background:#0a74b8}
   .card .ghost{background:#fff;color:var(--mid);border:1px solid #D7E6F5}
   .card .ghost:hover{background:#F1F6FC}
+
+  /* names editor */
+  .names-card{text-align:left;width:min(92vw,440px);border-top-color:var(--blue)}
+  .names-card h3{color:var(--navy);font-size:20px;font-weight:800}
+  .names-hint{color:var(--mid);font-size:13px;margin:8px 0 10px;line-height:1.5}
+  #namesInput{width:100%;border:1px solid #D7E6F5;border-radius:12px;padding:12px 14px;
+    font-family:var(--font);font-size:15px;line-height:1.55;resize:vertical;min-height:210px;color:var(--ink)}
+  #namesInput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(65,143,222,.15)}
+  .names-count{color:var(--light);font-size:13px;margin:8px 2px 16px;text-align:right}
+  .names-card .actions{justify-content:flex-end}
 
   #confetti{position:fixed;inset:0;z-index:7;pointer-events:none}
   footer{color:var(--light);font-size:12px;padding:0 0 26px}
@@ -85,6 +101,16 @@
 <body>
   <div class="bar top"></div>
   <div class="bar bottom"></div>
+  <div class="sprinkles" aria-hidden="true">
+    <i style="--c:#0080CC;--t:11%;--l:5%;--s:16px"></i>
+    <i style="--c:#EF5273;--t:21%;--l:11%;--s:11px;--r:1"></i>
+    <i style="--c:#0E9F6E;--t:7%;--l:90%;--s:14px"></i>
+    <i style="--c:#E0852A;--t:19%;--l:95%;--s:11px;--r:1"></i>
+    <i style="--c:#7C5CE0;--t:77%;--l:6%;--s:13px;--r:1"></i>
+    <i style="--c:#0FA6B8;--t:88%;--l:12%;--s:11px"></i>
+    <i style="--c:#F0C419;--t:80%;--l:93%;--s:15px"></i>
+    <i style="--c:#0080CC;--t:90%;--l:88%;--s:11px;--r:1"></i>
+  </div>
   <a class="back" href="index.html">&larr; 목록</a>
 
   <header>
@@ -100,6 +126,7 @@
       <button class="hub" id="hub">돌리기</button>
     </div>
     <button class="spin-btn" id="spin">룰렛 돌리기</button>
+    <button class="link-btn" id="editNames">이름 편집 · <span id="count">0</span>명</button>
     <div class="history" id="history"></div>
   </main>
 
@@ -107,6 +134,7 @@
     <a href="https://github.com/Cloud-Native-Community-Korea/kubeCommunityNight" target="_blank" rel="noopener">CNCK</a>
   </footer>
 
+  <!-- winner -->
   <div class="overlay" id="overlay">
     <div class="card">
       <div class="label">CONGRATULATIONS</div>
@@ -118,35 +146,93 @@
     </div>
   </div>
 
+  <!-- names editor -->
+  <div class="overlay" id="namesModal">
+    <div class="card names-card">
+      <h3>이름 목록</h3>
+      <p class="names-hint">한 줄에 한 명씩 입력하세요.<br>엑셀·구글시트의 한 열을 복사해 그대로 붙여넣어도 됩니다.</p>
+      <textarea id="namesInput" rows="12" placeholder="이름 1&#10;이름 2&#10;이름 3"></textarea>
+      <div class="names-count"><span id="inputCount">0</span>명</div>
+      <div class="actions">
+        <button class="again" id="namesApply">적용</button>
+        <button class="ghost" id="namesReset">기본값</button>
+        <button class="ghost" id="namesCancel">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <canvas id="confetti"></canvas>
 
 <script>
-const NAMES = [
-  "youngjukim","최병민","Younsung Lee","명건우","신이 황",
-  "강민석","이수빈","서준우","안형준","Heesung Choi",
-  "임재훈","Eleanor Lee","GiJu Kang","Jerry Lee","윤서율",
-  "양승현","박지원","정종민","김송현","박재호",
-  "최보현","김용우","이현규","배성현","허태무"
-];
-const COLORS = ["#0080CC","#1B365D","#3A7CB5","#0F4C81","#2E6CA6"];
-
-const N = NAMES.length;
+const DEFAULT_NAMES = ["윤서율"];
+const COLORS = ["#0080CC","#1B365D","#0E9F6E","#7C5CE0","#EF5273","#0FA6B8","#E0852A","#2E6CA6"];
 const TAU = Math.PI * 2;
-const segRad = TAU / N;
+const STORE_KEY = "cnck_roulette_names";
+
+function loadNames() {
+  try {
+    const s = localStorage.getItem(STORE_KEY);
+    if (s) { const a = JSON.parse(s); if (Array.isArray(a) && a.length) return a; }
+  } catch (e) {}
+  return DEFAULT_NAMES.slice();
+}
+function saveNames() { try { localStorage.setItem(STORE_KEY, JSON.stringify(names)); } catch (e) {} }
+// split a pasted column/row: newlines or tabs separate names; spaces kept inside a name
+function parseNames(text) {
+  return text.split(/[\r\n\t]+/).map(s => s.trim()).filter(Boolean);
+}
+let names = loadNames();
+
+// distinct color per segment; avoid the same color wrapping around (last == first)
+function buildColors(n) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    let ci = i % COLORS.length;
+    if (i === n - 1 && n > 1 && COLORS[ci] === out[0]) ci = (ci + 1) % COLORS.length;
+    out.push(COLORS[ci]);
+  }
+  return out;
+}
+let segColors = buildColors(names.length);
 
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
-const SIZE = 600, DPR = Math.min(window.devicePixelRatio || 1, 2);
+const SIZE = 900, DPR = Math.min(window.devicePixelRatio || 1, 2);
 canvas.width = SIZE * DPR; canvas.height = SIZE * DPR;
 ctx.scale(DPR, DPR);
 const R = SIZE / 2;
-const TEXT_OUTER = R - 16, TEXT_INNER_PAD = 86; // text spans rim -> near hub
+const TEXT_OUTER = R - 24, TEXT_INNER_PAD = 128;
+const FONT_STACK = getComputedStyle(document.body).fontFamily;
 
-let rotation = 0;       // radians, clockwise
+let rotation = 0;
 let spinning = false;
 
 function draw() {
   ctx.clearRect(0, 0, SIZE, SIZE);
+  const N = names.length;
+  if (N === 0) {
+    ctx.save(); ctx.translate(R, R);
+    ctx.beginPath(); ctx.arc(0, 0, R - 4, 0, TAU); ctx.fillStyle = "#E8F0F8"; ctx.fill();
+    ctx.fillStyle = "#889099"; ctx.font = `600 22px ${FONT_STACK}`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("이름을 추가하세요", 0, 0);
+    ctx.restore();
+    return;
+  }
+  const segRad = TAU / N;
+  if (N === 1) {
+    ctx.save(); ctx.translate(R, R);
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.fillStyle = segColors[0] || COLORS[0]; ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    let fs1 = 96; ctx.font = `800 ${fs1}px ${FONT_STACK}`;
+    while (ctx.measureText(names[0]).width > 2 * R - 150 && fs1 > 22) { fs1 -= 2; ctx.font = `800 ${fs1}px ${FONT_STACK}`; }
+    ctx.shadowColor = "rgba(13,27,42,.45)"; ctx.shadowBlur = 6;
+    ctx.fillText(names[0], 0, 0);
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(R, R, R - 1, 0, TAU); ctx.lineWidth = 6; ctx.strokeStyle = "#fff"; ctx.stroke();
+    ctx.beginPath(); ctx.arc(R, R, R - 4, 0, TAU); ctx.lineWidth = 3; ctx.strokeStyle = "rgba(212,160,30,.9)"; ctx.stroke();
+    return;
+  }
   ctx.save();
   ctx.translate(R, R);
   ctx.rotate(rotation);
@@ -157,49 +243,42 @@ function draw() {
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, R, a0, a1);
     ctx.closePath();
-    ctx.fillStyle = COLORS[i % COLORS.length];
+    ctx.fillStyle = segColors[i] || COLORS[i % COLORS.length];
     ctx.fill();
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = "rgba(255,255,255,.45)";
     ctx.stroke();
 
-    // name along the radius
     const mid = a0 + segRad / 2;
     ctx.save();
     ctx.rotate(mid);
     const total = ((rotation + mid) % TAU + TAU) % TAU;
     const flip = total > Math.PI / 2 && total < 3 * Math.PI / 2;
-    let fs = 19;
+    let fs = Math.min(60, Math.max(18, Math.round(segRad * R * 0.30)));
     const maxLen = TEXT_OUTER - TEXT_INNER_PAD;
-    ctx.font = `700 ${fs}px ${getComputedStyle(document.body).fontFamily}`;
-    while (ctx.measureText(NAMES[i]).width > maxLen && fs > 11) {
-      fs -= 1; ctx.font = `700 ${fs}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `700 ${fs}px ${FONT_STACK}`;
+    while (ctx.measureText(names[i]).width > maxLen && fs > 12) {
+      fs -= 1; ctx.font = `700 ${fs}px ${FONT_STACK}`;
     }
     ctx.fillStyle = "#fff";
     ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(13,27,42,.5)"; ctx.shadowBlur = 5; ctx.shadowOffsetY = 1;
     if (flip) {
       ctx.rotate(Math.PI);
       ctx.textAlign = "left";
-      ctx.fillText(NAMES[i], -TEXT_OUTER, 0);
+      ctx.fillText(names[i], -TEXT_OUTER, 0);
     } else {
       ctx.textAlign = "right";
-      ctx.fillText(NAMES[i], TEXT_OUTER, 0);
+      ctx.fillText(names[i], TEXT_OUTER, 0);
     }
     ctx.restore();
   }
   ctx.restore();
 
-  // outer ring
-  ctx.beginPath();
-  ctx.arc(R, R, R - 1, 0, TAU);
-  ctx.lineWidth = 6;
-  ctx.strokeStyle = "#fff";
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(R, R, R - 4, 0, TAU);
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = "rgba(212,160,30,.9)";
-  ctx.stroke();
+  ctx.beginPath(); ctx.arc(R, R, R - 1, 0, TAU);
+  ctx.lineWidth = 6; ctx.strokeStyle = "#fff"; ctx.stroke();
+  ctx.beginPath(); ctx.arc(R, R, R - 4, 0, TAU);
+  ctx.lineWidth = 3; ctx.strokeStyle = "rgba(212,160,30,.9)"; ctx.stroke();
 }
 
 const hub = document.getElementById('hub');
@@ -207,16 +286,18 @@ const spinBtn = document.getElementById('spin');
 
 function setBusy(b) {
   spinning = b;
-  hub.disabled = b; spinBtn.disabled = b;
+  const dis = b || names.length === 0;
+  hub.disabled = dis; spinBtn.disabled = dis;
   spinBtn.textContent = b ? "돌리는 중…" : "룰렛 돌리기";
 }
 
 function spin() {
-  if (spinning) return;
+  const N = names.length;
+  if (spinning || N === 0) return;
   setBusy(true);
-  const i = Math.floor(Math.random() * N);             // chosen winner (uniform)
-  // place segment i center under the top pointer
-  const centerBase = i * segRad + segRad / 2;          // clockwise from top
+  const segRad = TAU / N;
+  const i = Math.floor(Math.random() * N);
+  const centerBase = i * segRad + segRad / 2;
   const targetMod = ((TAU - (centerBase % TAU)) % TAU);
   const cur = ((rotation % TAU) + TAU) % TAU;
   const delta = ((targetMod - cur) % TAU + TAU) % TAU;
@@ -225,7 +306,7 @@ function spin() {
 
   (function frame(now) {
     const p = Math.min(1, (now - t0) / dur);
-    const e = 1 - Math.pow(1 - p, 3);                   // easeOutCubic
+    const e = 1 - Math.pow(1 - p, 3);
     rotation = start + (end - start) * e;
     draw();
     if (p < 1) requestAnimationFrame(frame);
@@ -235,19 +316,26 @@ function spin() {
 
 const history = [];
 function win(i) {
-  const name = NAMES[i];
+  const name = names[i];
   history.unshift(name);
   renderHistory();
   document.getElementById('winnerName').textContent = name;
   document.getElementById('overlay').classList.add('show');
   burst();
 }
-
 function renderHistory() {
   const el = document.getElementById('history');
   if (!history.length) { el.innerHTML = ''; return; }
   el.innerHTML = '<span class="h-label">최근 당첨</span>' +
-    history.slice(0, 8).map(n => `<span class="chip">${n}</span>`).join('');
+    history.slice(0, 8).map(n => `<span class="chip">${escapeHtml(n)}</span>`).join('');
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderCount() { document.getElementById('count').textContent = names.length; }
+function setNames(arr) {
+  names = arr; segColors = buildColors(names.length); saveNames(); renderCount(); rotation = 0; draw();
+  const empty = names.length === 0;
+  hub.disabled = empty; spinBtn.disabled = empty;
 }
 
 hub.addEventListener('click', spin);
@@ -260,11 +348,41 @@ document.getElementById('close').addEventListener('click', () =>
 document.getElementById('overlay').addEventListener('click', e => {
   if (e.target.id === 'overlay') e.currentTarget.classList.remove('show');
 });
+
+/* ---- names editor ---- */
+const namesModal = document.getElementById('namesModal');
+const namesInput = document.getElementById('namesInput');
+const inputCount = document.getElementById('inputCount');
+function openNames() {
+  namesInput.value = names.join('\n');
+  inputCount.textContent = names.length;
+  namesModal.classList.add('show');
+  setTimeout(() => namesInput.focus(), 60);
+}
+function closeNames() { namesModal.classList.remove('show'); }
+document.getElementById('editNames').addEventListener('click', openNames);
+namesInput.addEventListener('input', () => { inputCount.textContent = parseNames(namesInput.value).length; });
+document.getElementById('namesApply').addEventListener('click', () => {
+  const arr = parseNames(namesInput.value);
+  if (arr.length === 0) { namesInput.focus(); return; }
+  setNames(arr); closeNames();
+});
+document.getElementById('namesReset').addEventListener('click', () => {
+  namesInput.value = DEFAULT_NAMES.join('\n');
+  inputCount.textContent = DEFAULT_NAMES.length;
+  namesInput.focus();
+});
+document.getElementById('namesCancel').addEventListener('click', closeNames);
+namesModal.addEventListener('click', e => { if (e.target === namesModal) closeNames(); });
+
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space' || e.code === 'Enter') {
-    if (document.getElementById('overlay').classList.contains('show')) return;
-    e.preventDefault(); spin();
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (namesModal.classList.contains('show')) { if (e.key === 'Escape') closeNames(); return; }
+  if (document.getElementById('overlay').classList.contains('show')) {
+    if (e.key === 'Escape') document.getElementById('overlay').classList.remove('show');
+    return;
   }
+  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); spin(); }
 });
 
 /* ---- confetti ---- */
@@ -274,14 +392,14 @@ let pieces = [], confettiRAF = null;
 function sizeConfetti() { cc.width = innerWidth; cc.height = innerHeight; }
 sizeConfetti(); addEventListener('resize', () => { sizeConfetti(); draw(); });
 function burst() {
-  const palette = ["#0080CC","#1B365D","#418FDE","#D4A01E","#6FB1E0","#E04040"];
+  const palette = ["#0080CC","#0FA6B8","#0E9F6E","#7C5CE0","#EF5273","#E0852A","#F0C419"];
   pieces = [];
   for (let i = 0; i < 160; i++) {
     pieces.push({
       x: Math.random() * cc.width, y: -20 - Math.random() * cc.height * 0.4,
       r: 5 + Math.random() * 7, c: palette[(Math.random() * palette.length) | 0],
       vx: -2 + Math.random() * 4, vy: 2 + Math.random() * 4,
-      rot: Math.random() * TAU, vr: -0.2 + Math.random() * 0.4, life: 0
+      rot: Math.random() * TAU, vr: -0.2 + Math.random() * 0.4
     });
   }
   if (!confettiRAF) confettiRAF = requestAnimationFrame(stepConfetti);
@@ -290,7 +408,7 @@ function stepConfetti() {
   cx.clearRect(0, 0, cc.width, cc.height);
   let alive = 0;
   for (const p of pieces) {
-    p.life++; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
+    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
     if (p.y < cc.height + 30) alive++;
     cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.fillStyle = p.c;
     cx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6); cx.restore();
@@ -299,7 +417,9 @@ function stepConfetti() {
   else { cx.clearRect(0, 0, cc.width, cc.height); confettiRAF = null; }
 }
 
+renderCount();
 draw();
+if (names.length === 0) { hub.disabled = true; spinBtn.disabled = true; }
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
 </script>
 </body>
