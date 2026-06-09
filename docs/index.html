@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CNCK Kube Community Night — 발표 자료</title>
+<meta name="description" content="Cloud Native Community Korea · Kube Community Night 발표 자료 아카이브">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="index">
+  <header class="site-header">
+    <div class="brand">Cloud Native Community Korea</div>
+    <h1>Kube Community Night</h1>
+    <p class="tagline">행사 발표 자료 아카이브</p>
+  </header>
+
+  <main id="events" class="events-grid" aria-live="polite"></main>
+
+  <footer class="site-footer">
+    <a href="https://github.com/Cloud-Native-Community-Korea/kubeCommunityNight" target="_blank" rel="noopener">GitHub Repository</a>
+  </footer>
+
+  <script>
+    fetch('events.json', { cache: 'no-cache' })
+      .then(r => r.json())
+      .then(events => {
+        const grid = document.getElementById('events');
+        if (!Array.isArray(events) || events.length === 0) {
+          grid.innerHTML = '<p class="empty">아직 등록된 자료가 없습니다.</p>';
+          return;
+        }
+        events.sort((a, b) => (b.no || 0) - (a.no || 0));
+        grid.innerHTML = events.map(ev => `
+          <a class="event-card" href="viewer.html?event=${encodeURIComponent(ev.id)}">
+            <div class="thumb"><img loading="lazy" src="events/${ev.id}/slides/01.png" alt="${ev.title} 첫 슬라이드"></div>
+            <div class="meta">
+              <span class="badge">${ev.no}회</span>
+              <h2>${ev.title}</h2>
+              <p class="date">${ev.date}</p>
+              <p class="count">${ev.slideCount} slides</p>
+            </div>
+          </a>`).join('');
+      })
+      .catch(() => {
+        document.getElementById('events').innerHTML =
+          '<p class="empty">목록을 불러오지 못했습니다.</p>';
+      });
+  </script>
+</body>
+</html>

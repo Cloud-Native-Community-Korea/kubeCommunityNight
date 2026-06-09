@@ -1,0 +1,87 @@
+:root{
+  --navy:#1B365D; --blue:#0080CC; --accent:#418FDE; --gold:#D4A01E;
+  --bg:#F8FAFC; --card:#FFFFFF; --ink:#1A1A2E; --mid:#555E6E; --light:#889099;
+  --stage:#0D1B2A; --line:#E2E8F0;
+  --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',-apple-system,
+         BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* ============ INDEX ============ */
+body.index{display:flex;flex-direction:column;min-height:100%}
+.site-header{
+  text-align:center;padding:64px 24px 40px;
+  background:linear-gradient(180deg,#EAF2FB 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--line);
+}
+.site-header .brand{color:var(--blue);font-weight:700;letter-spacing:.12em;
+  font-size:13px;text-transform:uppercase}
+.site-header h1{color:var(--navy);font-size:clamp(28px,5vw,48px);font-weight:800;margin:10px 0 6px}
+.site-header .tagline{color:var(--mid);font-size:16px}
+
+.events-grid{
+  flex:1;width:100%;max-width:1080px;margin:0 auto;padding:40px 24px 64px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;
+  align-content:start;
+}
+.event-card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(16,33,60,.04);
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+  display:flex;flex-direction:column;
+}
+.event-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(16,33,60,.12);
+  border-color:var(--accent)}
+.event-card .thumb{aspect-ratio:16/9;background:#0D1B2A;overflow:hidden}
+.event-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.event-card .meta{padding:18px 20px 22px}
+.event-card .badge{display:inline-block;background:var(--blue);color:#fff;font-weight:700;
+  font-size:12px;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+.event-card h2{color:var(--navy);font-size:19px;font-weight:700;line-height:1.3}
+.event-card .date{color:var(--mid);font-size:14px;margin-top:6px}
+.event-card .count{color:var(--light);font-size:12px;margin-top:2px}
+.empty{color:var(--mid);grid-column:1/-1;text-align:center;padding:60px 0}
+.site-footer{text-align:center;padding:24px;color:var(--light);font-size:13px;
+  border-top:1px solid var(--line)}
+.site-footer a{color:var(--blue)}
+
+/* ============ VIEWER ============ */
+body.viewer{height:100vh;overflow:hidden;background:var(--stage)}
+.stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;background:
+   radial-gradient(120% 120% at 50% 0%,#13263b 0%,var(--stage) 60%)}
+.slide-img{max-width:100%;max-height:100%;object-fit:contain;
+  box-shadow:0 10px 50px rgba(0,0,0,.45);user-select:none}
+.nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:54px;height:54px;border:none;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.10);color:#fff;font-size:30px;line-height:1;
+  backdrop-filter:blur(4px);transition:background .15s,opacity .2s;opacity:0}
+.nav:hover{background:rgba(255,255,255,.22)}
+.nav.prev{left:18px}.nav.next{right:18px}
+.stage:hover .nav{opacity:1}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:14px;
+  padding:12px 18px;color:#fff;
+  background:linear-gradient(180deg,rgba(7,15,26,.78),rgba(7,15,26,0));
+  transition:opacity .3s;font-size:14px}
+.topbar.hide{opacity:0;pointer-events:none}
+.topbar .home{color:#cfe2f5;font-weight:600}
+.topbar .home:hover{color:#fff}
+.topbar .title{font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .spacer{flex:1}
+.topbar .counter{color:#aebdce;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.topbar .dl{border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:8px;
+  font-weight:600;font-size:13px}
+.topbar .dl:hover{background:rgba(255,255,255,.15)}
+.topbar .fs{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px}
+.topbar .fs:hover{background:rgba(255,255,255,.15)}
+
+@media (max-width:640px){
+  .nav{opacity:1;width:44px;height:44px;font-size:24px}
+  .topbar .title{max-width:40vw}
+  .site-header{padding:44px 20px 28px}
+}
