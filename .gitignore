@@ -6,3 +6,10 @@
 
 # 백업 파일
 *.backup-*.pptx
+
+# 생성된 웹 슬라이드 — build_site.py / GitHub Actions가 빌드, 커밋하지 않음
+docs/events/
+docs/events.json
+
+# 빌드 임시물
+*.pdf

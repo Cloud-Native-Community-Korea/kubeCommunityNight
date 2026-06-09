@@ -1,8 +1,9 @@
-name: Build slides site
+name: Build & deploy slides site
 
-# Renders every .pptx listed in events.config.json into web slides (docs/)
-# so GitHub Pages can serve them. Future events: add the .pptx + a config
-# entry, push, and this regenerates docs/ automatically.
+# Renders every .pptx listed in events.config.json into web slides and deploys
+# the docs/ site straight to GitHub Pages. Nothing generated is committed back,
+# so local edits never conflict with the bot. Add a .pptx + a config entry and
+# push to publish a new event.
 
 on:
   push:
@@ -11,22 +12,25 @@ on:
       - "**.pptx"
       - "events.config.json"
       - "build_site.py"
-      - "docs/index.html"
-      - "docs/viewer.html"
-      - "docs/assets/**"
+      - "docs/**"
       - ".github/workflows/build-pages.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: build-pages
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,17 +41,13 @@ jobs:
             libreoffice poppler-utils fonts-noto-cjk fonts-nanum
           fc-cache -f >/dev/null 2>&1 || true
 
-      - name: Render slides
+      - name: Render slides into docs/
         run: python3 build_site.py
 
-      - name: Commit regenerated slides
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs
-          if git diff --cached --quiet; then
-            echo "No slide changes."
-          else
-            git commit -m "build: regenerate web slides [skip ci]"
-            git push
-          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
