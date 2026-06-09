@@ -1,0 +1,53 @@
+name: Build slides site
+
+# Renders every .pptx listed in events.config.json into web slides (docs/)
+# so GitHub Pages can serve them. Future events: add the .pptx + a config
+# entry, push, and this regenerates docs/ automatically.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.pptx"
+      - "events.config.json"
+      - "build_site.py"
+      - "docs/index.html"
+      - "docs/viewer.html"
+      - "docs/assets/**"
+      - ".github/workflows/build-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LibreOffice, poppler & Korean fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libreoffice poppler-utils fonts-noto-cjk fonts-nanum
+          fc-cache -f >/dev/null 2>&1 || true
+
+      - name: Render slides
+        run: python3 build_site.py
+
+      - name: Commit regenerated slides
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "No slide changes."
+          else
+            git commit -m "build: regenerate web slides [skip ci]"
+            git push
+          fi
