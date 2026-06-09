@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>랜덤 룰렛 · CNCK Kube Community Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B365D; --blue:#0080CC; --accent:#418FDE; --gold:#D4A01E;
+    --bg:#F8FAFC; --ink:#1A1A2E; --mid:#555E6E; --light:#889099;
+    --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg);
+    min-height:100vh;text-align:center;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .bar{position:fixed;left:0;right:0;height:7px;background:var(--blue);z-index:3}
+  .bar.top{top:0}.bar.bottom{bottom:0}
+
+  header{padding:30px 16px 6px}
+  header img.banner{width:min(90vw,460px);height:auto;display:block;margin:0 auto 8px}
+  header h1{color:var(--navy);font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-.01em}
+  header p{color:var(--blue);font-weight:600;font-size:clamp(14px,2.4vw,18px);margin-top:4px}
+
+  main{display:flex;flex-direction:column;align-items:center;gap:18px;padding:8px 16px 40px}
+
+  .wheel-wrap{position:relative;width:min(86vw,560px);aspect-ratio:1/1;margin-top:6px}
+  #wheel{width:100%;height:100%;display:block;
+    filter:drop-shadow(0 14px 34px rgba(16,33,60,.20));border-radius:50%}
+  /* pointer at top */
+  .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:4;
+    width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;
+    border-top:30px solid var(--gold);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+  /* center hub = spin button */
+  .hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;
+    width:23%;height:23%;border-radius:50%;border:6px solid #fff;cursor:pointer;
+    background:radial-gradient(circle at 50% 38%,#2A89D6,var(--blue));
+    color:#fff;font-family:var(--font);font-weight:800;font-size:clamp(15px,2.6vw,21px);
+    box-shadow:0 6px 16px rgba(16,33,60,.35);transition:transform .12s}
+  .hub:hover{transform:translate(-50%,-50%) scale(1.05)}
+  .hub:active{transform:translate(-50%,-50%) scale(.97)}
+  .hub:disabled{opacity:.7;cursor:default}
+
+  .spin-btn{background:var(--blue);color:#fff;border:none;border-radius:999px;cursor:pointer;
+    font-family:var(--font);font-weight:700;font-size:19px;padding:14px 46px;
+    box-shadow:0 8px 20px rgba(0,128,204,.35);transition:transform .12s,box-shadow .12s,background .12s}
+  .spin-btn:hover{background:#0a74b8;transform:translateY(-2px)}
+  .spin-btn:disabled{background:#9bb6c9;box-shadow:none;cursor:default;transform:none}
+
+  .history{max-width:600px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:30px}
+  .history .h-label{color:var(--light);font-size:13px;align-self:center;margin-right:2px}
+  .chip{background:#EAF2FB;color:var(--navy);border:1px solid #D7E6F5;border-radius:999px;
+    padding:5px 12px;font-size:13px;font-weight:600}
+  .chip:first-of-type{background:var(--gold);color:#fff;border-color:var(--gold)}
+
+  /* winner overlay */
+  .overlay{position:fixed;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;
+    background:rgba(13,27,42,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;
+    transition:opacity .25s}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .card{background:#fff;border-radius:22px;padding:34px 40px 30px;max-width:90vw;
+    box-shadow:0 24px 70px rgba(0,0,0,.35);transform:scale(.9);transition:transform .28s cubic-bezier(.2,.9,.3,1.3);
+    border-top:8px solid var(--gold)}
+  .overlay.show .card{transform:scale(1)}
+  .card .label{color:var(--gold);font-weight:800;letter-spacing:.22em;font-size:15px}
+  .card .name{color:var(--navy);font-weight:800;font-size:clamp(34px,8vw,68px);margin:8px 0 20px;
+    word-break:keep-all;line-height:1.1}
+  .card .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .card button{font-family:var(--font);font-weight:700;font-size:16px;border-radius:12px;
+    padding:11px 24px;cursor:pointer;border:none}
+  .card .again{background:var(--blue);color:#fff}
+  .card .again:hover{background:#0a74b8}
+  .card .ghost{background:#fff;color:var(--mid);border:1px solid #D7E6F5}
+  .card .ghost:hover{background:#F1F6FC}
+
+  #confetti{position:fixed;inset:0;z-index:7;pointer-events:none}
+  footer{color:var(--light);font-size:12px;padding:0 0 26px}
+  footer a{color:var(--blue);text-decoration:none}
+  a.back{position:fixed;top:16px;left:16px;z-index:5;color:var(--blue);font-weight:600;
+    text-decoration:none;font-size:14px;background:#fff;border:1px solid #D7E6F5;
+    padding:6px 12px;border-radius:10px}
+</style>
+</head>
+<body>
+  <div class="bar top"></div>
+  <div class="bar bottom"></div>
+  <a class="back" href="index.html">&larr; 목록</a>
+
+  <header>
+    <img class="banner" src="assets/cnck-banner-color-2.png" alt="Cloud Native Community Korea"
+         onerror="this.style.display='none'">
+    <h1>행운의 룰렛</h1>
+  </header>
+
+  <main>
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <canvas id="wheel" width="600" height="600"></canvas>
+      <button class="hub" id="hub">돌리기</button>
+    </div>
+    <button class="spin-btn" id="spin">룰렛 돌리기</button>
+    <div class="history" id="history"></div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/Cloud-Native-Community-Korea/kubeCommunityNight" target="_blank" rel="noopener">CNCK</a>
+  </footer>
+
+  <div class="overlay" id="overlay">
+    <div class="card">
+      <div class="label">CONGRATULATIONS</div>
+      <div class="name" id="winnerName"></div>
+      <div class="actions">
+        <button class="again" id="again">다시 돌리기</button>
+        <button class="ghost" id="close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+<script>
+const NAMES = [
+  "youngjukim","최병민","Younsung Lee","명건우","신이 황",
+  "강민석","이수빈","서준우","안형준","Heesung Choi",
+  "임재훈","Eleanor Lee","GiJu Kang","Jerry Lee","윤서율",
+  "양승현","박지원","정종민","김송현","박재호",
+  "최보현","김용우","이현규","배성현","허태무"
+];
+const COLORS = ["#0080CC","#1B365D","#3A7CB5","#0F4C81","#2E6CA6"];
+
+const N = NAMES.length;
+const TAU = Math.PI * 2;
+const segRad = TAU / N;
+
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const SIZE = 600, DPR = Math.min(window.devicePixelRatio || 1, 2);
+canvas.width = SIZE * DPR; canvas.height = SIZE * DPR;
+ctx.scale(DPR, DPR);
+const R = SIZE / 2;
+const TEXT_OUTER = R - 16, TEXT_INNER_PAD = 86; // text spans rim -> near hub
+
+let rotation = 0;       // radians, clockwise
+let spinning = false;
+
+function draw() {
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  ctx.save();
+  ctx.translate(R, R);
+  ctx.rotate(rotation);
+  for (let i = 0; i < N; i++) {
+    const a0 = -Math.PI / 2 + i * segRad;
+    const a1 = a0 + segRad;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, R, a0, a1);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length];
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "rgba(255,255,255,.45)";
+    ctx.stroke();
+
+    // name along the radius
+    const mid = a0 + segRad / 2;
+    ctx.save();
+    ctx.rotate(mid);
+    const total = ((rotation + mid) % TAU + TAU) % TAU;
+    const flip = total > Math.PI / 2 && total < 3 * Math.PI / 2;
+    let fs = 19;
+    const maxLen = TEXT_OUTER - TEXT_INNER_PAD;
+    ctx.font = `700 ${fs}px ${getComputedStyle(document.body).fontFamily}`;
+    while (ctx.measureText(NAMES[i]).width > maxLen && fs > 11) {
+      fs -= 1; ctx.font = `700 ${fs}px ${getComputedStyle(document.body).fontFamily}`;
+    }
+    ctx.fillStyle = "#fff";
+    ctx.textBaseline = "middle";
+    if (flip) {
+      ctx.rotate(Math.PI);
+      ctx.textAlign = "left";
+      ctx.fillText(NAMES[i], -TEXT_OUTER, 0);
+    } else {
+      ctx.textAlign = "right";
+      ctx.fillText(NAMES[i], TEXT_OUTER, 0);
+    }
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // outer ring
+  ctx.beginPath();
+  ctx.arc(R, R, R - 1, 0, TAU);
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(R, R, R - 4, 0, TAU);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(212,160,30,.9)";
+  ctx.stroke();
+}
+
+const hub = document.getElementById('hub');
+const spinBtn = document.getElementById('spin');
+
+function setBusy(b) {
+  spinning = b;
+  hub.disabled = b; spinBtn.disabled = b;
+  spinBtn.textContent = b ? "돌리는 중…" : "룰렛 돌리기";
+}
+
+function spin() {
+  if (spinning) return;
+  setBusy(true);
+  const i = Math.floor(Math.random() * N);             // chosen winner (uniform)
+  // place segment i center under the top pointer
+  const centerBase = i * segRad + segRad / 2;          // clockwise from top
+  const targetMod = ((TAU - (centerBase % TAU)) % TAU);
+  const cur = ((rotation % TAU) + TAU) % TAU;
+  const delta = ((targetMod - cur) % TAU + TAU) % TAU;
+  const spins = TAU * (5 + Math.floor(Math.random() * 3));
+  const start = rotation, end = rotation + spins + delta, t0 = performance.now(), dur = 4600;
+
+  (function frame(now) {
+    const p = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - p, 3);                   // easeOutCubic
+    rotation = start + (end - start) * e;
+    draw();
+    if (p < 1) requestAnimationFrame(frame);
+    else { setBusy(false); win(i); }
+  })(t0);
+}
+
+const history = [];
+function win(i) {
+  const name = NAMES[i];
+  history.unshift(name);
+  renderHistory();
+  document.getElementById('winnerName').textContent = name;
+  document.getElementById('overlay').classList.add('show');
+  burst();
+}
+
+function renderHistory() {
+  const el = document.getElementById('history');
+  if (!history.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<span class="h-label">최근 당첨</span>' +
+    history.slice(0, 8).map(n => `<span class="chip">${n}</span>`).join('');
+}
+
+hub.addEventListener('click', spin);
+spinBtn.addEventListener('click', spin);
+document.getElementById('again').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('show'); setTimeout(spin, 280);
+});
+document.getElementById('close').addEventListener('click', () =>
+  document.getElementById('overlay').classList.remove('show'));
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target.id === 'overlay') e.currentTarget.classList.remove('show');
+});
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'Enter') {
+    if (document.getElementById('overlay').classList.contains('show')) return;
+    e.preventDefault(); spin();
+  }
+});
+
+/* ---- confetti ---- */
+const cc = document.getElementById('confetti');
+const cx = cc.getContext('2d');
+let pieces = [], confettiRAF = null;
+function sizeConfetti() { cc.width = innerWidth; cc.height = innerHeight; }
+sizeConfetti(); addEventListener('resize', () => { sizeConfetti(); draw(); });
+function burst() {
+  const palette = ["#0080CC","#1B365D","#418FDE","#D4A01E","#6FB1E0","#E04040"];
+  pieces = [];
+  for (let i = 0; i < 160; i++) {
+    pieces.push({
+      x: Math.random() * cc.width, y: -20 - Math.random() * cc.height * 0.4,
+      r: 5 + Math.random() * 7, c: palette[(Math.random() * palette.length) | 0],
+      vx: -2 + Math.random() * 4, vy: 2 + Math.random() * 4,
+      rot: Math.random() * TAU, vr: -0.2 + Math.random() * 0.4, life: 0
+    });
+  }
+  if (!confettiRAF) confettiRAF = requestAnimationFrame(stepConfetti);
+}
+function stepConfetti() {
+  cx.clearRect(0, 0, cc.width, cc.height);
+  let alive = 0;
+  for (const p of pieces) {
+    p.life++; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
+    if (p.y < cc.height + 30) alive++;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.fillStyle = p.c;
+    cx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6); cx.restore();
+  }
+  if (alive > 0) confettiRAF = requestAnimationFrame(stepConfetti);
+  else { cx.clearRect(0, 0, cc.width, cc.height); confettiRAF = null; }
+}
+
+draw();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+</script>
+</body>
+</html>
