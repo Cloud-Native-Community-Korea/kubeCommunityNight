@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# PowerPoint 임시 잠금 파일
+~$*.pptx
+
+# 백업 파일
+*.backup-*.pptx
